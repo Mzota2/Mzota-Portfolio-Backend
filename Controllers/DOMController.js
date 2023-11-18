@@ -167,9 +167,8 @@ const updateAbout = async(req, res)=>{
             const {id} = req.params;
             const{description} = req.body;
             const foundAbout = await AboutModel.findById({_id:id});
-            console.log(req.file);
-            if(foundHome){
-                const updatedHome = await foundAbout.updateOne({
+            if(foundAbout){
+                const updatedAbout = await foundAbout.updateOne({
                     description:description? description:foundAbout.description,
                     resume: req.file?req.file.path:foundAbout.resume
                 }, {new:true});
