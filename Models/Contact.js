@@ -11,11 +11,11 @@ const contactSchema = new Schema({
     },
 
     contactMessage:{
-        type:String
+        type:Array
     }
 
 
-});
+}, {timestamps:true});
 
 const ContactModel = mongoose.model('contact', contactSchema);
 module.exports = ContactModel;

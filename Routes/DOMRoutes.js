@@ -20,7 +20,7 @@ const {
 
 } = require('../Controllers/DOMController');
 
-router.route('/portfolio/download').get(downloadResume)
+router.route('/portfolio/download').get(downloadResume);
 
 router.route('/portfolio/home').post(createHome).get(getHome);
 router.route('/portfolio/home/:id').put(updateHome).delete(deleteHome);

@@ -168,12 +168,12 @@ const updateAbout = async(req, res)=>{
             const{description} = req.body;
             const foundAbout = await AboutModel.findById({_id:id});
             if(foundAbout){
-                const updatedAbout = await foundAbout.updateOne({
+                const updatedAbout = await AboutModel.findOneAndUpdate({_id:id},{
                     description:description? description:foundAbout.description,
                     resume: req.file?req.file.path:foundAbout.resume
-                }, {new:true});
+                }, {returnOriginal:false});
     
-                res.status(200).json(foundAbout);
+                res.status(200).json(updatedAbout);
             }
         })
         
@@ -263,12 +263,12 @@ const updateSkill = async(req, res)=>{
             const{skillTitle, skillRating} = req.body;
             const foundSkill = await SkillModel.findById({_id:id});
             if(foundSkill){
-                const updatedSkill = await foundSkill.updateOne({
+                const updatedSkill = await SkillModel.findOneAndUpdate({_id:id},{
                     skillTitle:skillTitle?skillTitle:foundSkill.skillTitle,
                     skillRating:skillRating?skillRating:foundSkill.skillRating,
-                }, {new:true});
+                }, {returnOriginal:false});
     
-                res.status(200).json(foundSkill);
+                res.status(200).json(updatedSkill);
             }
         })
        
@@ -337,7 +337,7 @@ const createProject = async(req, res) =>{
                 projectShares,
                 projectComments,
                 projectLikes,
-                projectImage:req.file.path
+                projectImage:req.file?req.file.path:''
             }).then(()=>{
                 res.status(200).json('Project created successfully');
             }).catch((error)=>{
@@ -356,22 +356,18 @@ const createProject = async(req, res) =>{
 const updateProject = async(req, res)=>{
     try {
         upload(req, res, async(err)=>{
-            const{projectName, projectDescription, projectLiveLink, projectGitHubLink, projectComments, projectLikes, projectShares} = req.body;
+            const{projectName, projectDescription, projectLiveLink, projectGitHubLink} = req.body;
             if(err){
                 console.log(err)
             }
             const {id} = req.params;
-            const{description} = req.body;
             const foundProject = await ProjectModel.findById({_id:id});
             if(foundProject){
                 const updatedProject= await foundProject.updateOne({
-                    projectName:projectName?projectName:foundProject.projectName,
-                    projectDescription:projectDescription?projectDescription:foundProject.projectDescription,
-                    projectLiveLink:projectLiveLink?projectLiveLink:foundProject.projectLiveLink,
-                    projectGitHubLink:projectGitHubLink?projectGitHubLink:foundProject.projectGitHubLink,
-                    projectShares:projectShares?projectShares:foundProject.projectShares,
-                    projectComments:projectComments?projectComments:foundProject.projectComments,
-                    projectLikes:projectLikes?projectLikes:foundProject.projectLikes,
+                    projectName,
+                    projectDescription,
+                    projectLiveLink,
+                    projectGitHubLink,
                     projectImage:req.file?req.file.path:foundProject.projectImage
                 }, {new:true});
     
@@ -510,23 +506,34 @@ const getService = async(req, res) =>{
 
 const createContact = async(req, res) =>{
     try {
-        const{contactEmail, contactName, contactPhone, contactMessage} = req.body;
+        const{contactEmail, contactName, contactMessage} = req.body;
+        const lowerCaseEmail = contactEmail.toLowerCase();
 
-        const newContact = await ContactModel.create({
-            contactName,
-            contactEmail,
-            contactMessage,
-            contactPhone
-        }).then(()=>{
-            res.status(200).json('Contact created successfully');
-        }).catch((error)=>{
-            console.log(error);
-            res.sendStatus(400);
-        })
-        
+        const foundContact = await ContactModel.findOne({contactEmail:lowerCaseEmail});
+
+        if(foundContact){
+            console.log('found contact')
+            const messagesUpdate = await foundContact.updateOne({
+                contactName,
+                contactMessage:foundContact.contactMessage.concat(contactMessage)
+
+            });
+
+            res.json('updated messages');
+        }
+
+        else if(!foundContact){
+            const newContact = await ContactModel.create({
+                contactName,
+                contactEmail:lowerCaseEmail,
+                contactMessage,
+            })
+            res.status(200).json('sent message');
+        }
+     
     } catch (error) {
         console.log('Error: '+ error);
-        res.sendStatus(500);
+        
     }
 }
 
