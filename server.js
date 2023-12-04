@@ -12,7 +12,7 @@ const { refreshToken } = require('./JWT/JWT');
 //app middleware
 app.use(express.json());
 app.use(cors({
-    origin:['http://localhost:3000','http://localhost:3001', 'https://mzota-portfolio.onrender.com'],
+    origin:['http://localhost:3000','http://localhost:3001', 'https://mzota-portfolio.onrender.com', 'https://mzota-portifolio-admin.onrender.com'],
     credentials:true
 }));
 
