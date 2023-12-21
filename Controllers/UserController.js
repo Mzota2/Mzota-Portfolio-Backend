@@ -94,9 +94,11 @@ const signOut = async(req, res)=>{
 }
 
 
+
 module.exports = {
     signIn,
     signUp,
     signOut,
-    getUser
+    getUser,
+
 }

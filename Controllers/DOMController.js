@@ -356,7 +356,7 @@ const createProject = async(req, res) =>{
 const updateProject = async(req, res)=>{
     try {
         upload(req, res, async(err)=>{
-            const{projectName, projectDescription, projectLiveLink, projectGitHubLink} = req.body;
+            const{projectName, projectDescription, projectLiveLink, projectGitHubLink, projectLikes, projectComments, projectShares} = req.body;
             if(err){
                 console.log(err)
             }
@@ -368,6 +368,9 @@ const updateProject = async(req, res)=>{
                     projectDescription,
                     projectLiveLink,
                     projectGitHubLink,
+                    projectLikes,
+                    projectComments,
+                    projectShares,
                     projectImage:req.file?req.file.path:foundProject.projectImage
                 }, {new:true});
     
