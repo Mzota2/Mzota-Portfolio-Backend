@@ -20,6 +20,7 @@ const projectSchema = new Schema({
     },
 
     projectLikes:{
+        defualt:0,
         type:Number
     },
 
